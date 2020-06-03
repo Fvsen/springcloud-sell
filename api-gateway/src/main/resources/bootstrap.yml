@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: CONFIG
+      profile: dev
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+#zuul:
+#  # 配置路由地址的别名
+#  routes:
+#    myProduct:
+#      path: /myProduct/**
+#      serviceId: product
+#      sensitiveHeaders:
+## 简写，将配置命名为serviceId则可以省略serviceId的配置
+##     product: /myProduct/**
+#  # 排除某些路由
+#  ignored-patterns:
+#    - /myProduct/product/listForOrder
+##zuul拦截请求内容，默认值为："Cookie", "Set-Cookie", "Authorization"。因此，如果需要不拦截则可将sensitive-headers设为空值
+##  sensitive-headers:
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+  #        include: '*'

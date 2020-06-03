@@ -1,0 +1,62 @@
+#使用统一配置中心的方法：
+#将配置文件写入远端git仓库，项目中通过系列配置直接拉取配置信息，
+#配置之后需要将本地配置文件名字改为 【bootstrap.yml】
+spring:
+  application:
+    name: order
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: CONFIG
+      profile: dev
+#
+    bus:
+      enabled: true
+      trace:
+        enabled: true
+    stream:
+      bindings:
+        reviewmessage:
+          group: review
+        myMessage:
+          group: order.
+          content-type: application/json
+  zipkin:
+    base-url: http://192.168.168.113:9411/
+  sleuth:
+    sampler:
+      probability: 1.0
+
+#eureka的配置文件需要放在项目中，如果项目中没有eureka配置则会访问默认地址http://localhost:8761/eureka/，
+#因此有时会造成某些错误
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+hystrix:      #使用配置配置降级的超时时间
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 1000
+    getMsg:     #针对特定场景可使用局部配置，只需将default项命名为引用降级的方法名（默认，可通过注解@hystrixcommand配置别名）
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 3000
+feign:
+  hystrix:
+    enabled: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  server:
+    servlet:
+      context-path: /
+logging:
+  level:
+    org.springframework.cloud.openfeign: debug
